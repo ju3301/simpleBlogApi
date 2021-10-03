@@ -44,3 +44,20 @@ module.exports.postUser = async (req, resp) => {
     }
 
 }
+
+module.exports.login = async (req, resp) => {
+    var user = await prisma.user.findUnique({
+        where: {
+            email: req.body.email
+        }
+    })
+    var passwordHash = require('password-hash')
+    var result = passwordHash.verify(req.body.password, user.hashedPassword)
+    if (result === true) {
+        const token = jsonwebtoken.generate({ id: user.id })
+        resp.status(200).json({
+            user: user,
+            token: token
+        })
+    }
+}

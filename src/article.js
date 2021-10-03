@@ -6,6 +6,7 @@ const prisma = new PrismaClient()
 module.exports.getArticles = async (req, resp) => {
     const articles = await prisma.article.findMany({
         select: {
+            id: true,
             title: true,
             slug: true,
             content: true,

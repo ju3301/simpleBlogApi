@@ -4,7 +4,7 @@ const port = 4000
 const { body } = require('express-validator')
 const { getCategories, postCategory } = require('./src/category')
 const { getArticles, postArticle } = require('./src/article')
-const { getUsers, postUser } = require('./src/user')
+const { getUsers, postUser, login } = require('./src/user')
 const { authenticate } = require('./src/token')
 const cors = require('cors');
 var corsOptions = {
@@ -18,7 +18,8 @@ app.use(express.json());
 
 // USERS
 app.get('/api/users', authenticate, getUsers)
-app.post('/api/user', body('email').isEmail(), body('password').isStrongPassword(), postUser)
+app.post('/api/user', body('email').isEmail(), body('password').isStrongPassword(), body('password').isString(), postUser)
+app.post('/api/token', body('email').isEmail(), body('password').isString(), login)
 
 // ARTICLES
 app.get('/api/articles', getArticles)
