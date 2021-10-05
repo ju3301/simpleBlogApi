@@ -52,12 +52,19 @@ module.exports.login = async (req, resp) => {
         }
     })
     var passwordHash = require('password-hash')
-    var result = passwordHash.verify(req.body.password, user.hashedPassword)
-    if (result === true) {
-        const token = jsonwebtoken.generate({ id: user.id })
-        resp.status(200).json({
-            user: user,
-            token: token
-        })
+
+    try {
+        var result = passwordHash.verify(req.body.password, user.hashedPassword)
+        if (result === true) {
+            const token = jsonwebtoken.generate({ id: user.id })
+            resp.status(200).json({
+                token: token
+            })
+        } else {
+            resp.status(400).json({ errors: { content: "Wrong credentials" } })
+        }
+    } catch (error) {
+        console.log(error)
     }
+
 }
